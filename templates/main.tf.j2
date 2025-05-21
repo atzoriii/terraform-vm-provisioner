@@ -1,0 +1,29 @@
+# Network
+resource "{{ provider }}_network" "net" {
+  name = "${var.router_name}-net"
+}
+
+resource "{{ provider }}_subnet" "subnet" {
+  name       = var.subnet_name
+  network_id = {{ provider }}_network.net.id
+  cidr       = "10.0.0.0/24"
+}
+
+resource "{{ provider }}_router" "router" {
+  name = var.router_name
+}
+
+# VM
+resource "{{ provider }}_server" "vm" {
+  count        = var.vm_count
+  name         = "${var.vm_prefix}-${count.index + 1}"
+  image        = var.image
+  flavor       = var.flavor
+  key_name     = var.key_name
+  network {
+    uuid = {{ provider }}_network.net.id
+  }
+  metadata = {
+    ssh_user = var.username
+  }
+}

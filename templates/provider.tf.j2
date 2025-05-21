@@ -1,0 +1,14 @@
+terraform {
+  required_providers {
+    {{ provider }} = {
+      source  = "opentofu/{{ 'openstack' if provider=='openstack' else 'aws' }}"
+      version = "~> 1.0"
+    }
+  }
+}
+
+provider "{{ provider }}" {
+  # Configura qui gli endpoint e le credenziali
+  # openstack: auth_url, tenant_name, user_name, password
+  # aws: region, access_key, secret_key
+}
