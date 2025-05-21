@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+
+# Distribuzione e build
+build/
+dist/
+*.egg-info/
+
+# File di configurazione locale
+.env
+
+# Cartella con file generati
+generated/
+configs/
+
+# File di log
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
