@@ -1,29 +1,46 @@
-# Network
-resource "{{ provider }}_network" "net" {
-  name = "${var.router_name}-net"
+resource "openstack_networking_network_v2" "net" {
+  name = "net-${var.router_name}"
 }
 
-resource "{{ provider }}_subnet" "subnet" {
-  name       = var.subnet_name
-  network_id = {{ provider }}_network.net.id
-  cidr       = "10.0.0.0/24"
+resource "openstack_networking_subnet_v2" "subnet" {
+  name            = var.subnet_name
+  network_id      = openstack_networking_network_v2.net.id
+  cidr            = "192.168.199.0/24"
+  ip_version      = 4
+  dns_nameservers = ["8.8.8.8"]
 }
 
-resource "{{ provider }}_router" "router" {
-  name = var.router_name
+resource "openstack_networking_router_v2" "router" {
+  name                = var.router_name
+  external_gateway    = var.external_network_id
 }
 
-# VM
-resource "{{ provider }}_server" "vm" {
-  count        = var.vm_count
-  name         = "${var.vm_prefix}-${count.index + 1}"
-  image        = var.image
-  flavor       = var.flavor
-  key_name     = var.key_name
+resource "openstack_networking_router_interface_v2" "router_interface" {
+  router_id = openstack_networking_router_v2.router.id
+  subnet_id = openstack_networking_subnet_v2.subnet.id
+}
+
+resource "openstack_compute_instance_v2" "vm" {
+  count       = var.vm_count
+  name        = "${var.vm_prefix}${count.index + 1}"
+  image_name  = var.image
+  flavor_name = var.flavor
+  key_pair    = var.key_name
+
   network {
-    uuid = {{ provider }}_network.net.id
+    uuid = openstack_networking_network_v2.net.id
   }
-  metadata = {
-    ssh_user = var.username
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo Hello from ${self.name}"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = var.username
+      private_key = file("~/.ssh/id_rsa")
+      host        = self.access_ip_v4
+    }
   }
 }

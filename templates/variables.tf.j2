@@ -1,8 +1,35 @@
-variable "router_name" { type = string }
-variable "subnet_name" { type = string }
-variable "vm_count" { type = number }
-variable "vm_prefix" { type = string }
-variable "image" { type = string }
-variable "flavor" { type = string }
-variable "username" { type = string }
-variable "key_name" { type = string }
+variable "router_name" {
+  type = string
+}
+
+variable "subnet_name" {
+  type = string
+}
+
+variable "vm_count" {
+  type = number
+}
+
+variable "vm_prefix" {
+  type = string
+}
+
+variable "image" {
+  type = string
+}
+
+variable "flavor" {
+  type = string
+}
+
+variable "username" {
+  type = string
+}
+
+variable "key_name" {
+  type = string
+}
+
+variable "external_network_id" {
+  type = string
+}
